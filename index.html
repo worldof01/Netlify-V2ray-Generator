@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>VLESS Config Generator</title>
+    <title>VLESS Generator - با لیست دامنه</title>
     <style>
         * {
             box-sizing: border-box;
@@ -19,22 +19,17 @@
             min-height: 100vh;
         }
         .container {
-            max-width: 650px;
+            max-width: 750px;
             width: 100%;
             background: white;
             border-radius: 24px;
             box-shadow: 0 12px 28px rgba(0,0,0,0.1);
             padding: 24px 28px;
-            transition: all 0.2s;
         }
         h1 {
             font-size: 1.7rem;
             margin: 0 0 8px 0;
             color: #1e2a3e;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
         .sub {
             color: #5b6e8c;
@@ -53,7 +48,6 @@
             margin-bottom: 6px;
             color: #1e293b;
             font-size: 0.85rem;
-            letter-spacing: 0.3px;
         }
         input, textarea {
             background: #f8fafc;
@@ -65,9 +59,15 @@
             outline: none;
             font-family: monospace;
         }
-        input:focus, textarea:focus {
-            border-color: #ef4444;
-            box-shadow: 0 0 0 3px rgba(239,68,68,0.2);
+        input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+        }
+        /* حاشیه قرمز برای فیلد فعال (مشابه Shape در دلفی) */
+        .active-edit {
+            border: 2px solid #ef4444 !important;
+            background-color: #fff5f5;
+            box-shadow: 0 0 0 2px rgba(239,68,68,0.2);
         }
         .row-2 {
             display: flex;
@@ -89,10 +89,6 @@
             transition: 0.2s;
             width: 100%;
             margin-top: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
         }
         button:hover {
             background: #dc2626;
@@ -117,7 +113,6 @@
             text-transform: uppercase;
             font-weight: bold;
             color: #475569;
-            letter-spacing: 1px;
             margin-bottom: 10px;
         }
         #generatedLink {
@@ -129,6 +124,7 @@
             padding: 12px;
             border-radius: 16px;
             border: none;
+            width: 100%;
             resize: vertical;
         }
         .status {
@@ -137,15 +133,52 @@
             text-align: center;
             color: #2b6e3c;
         }
-        hr {
+        /* لیست دامنه ها (snilis) */
+        .snilis-section {
             margin: 20px 0 10px;
-            border-color: #e2e8f0;
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+        }
+        .snilis-title {
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #334155;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .snilis-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .snilis-item {
+            background: white;
+            border: 1px solid #cbd5e1;
+            border-radius: 40px;
+            padding: 6px 16px;
+            font-size: 0.8rem;
+            font-family: monospace;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #1e293b;
+        }
+        .snilis-item:hover {
+            background: #e2e8f0;
+            border-color: #ef4444;
+            transform: scale(0.96);
         }
         .footer-note {
             font-size: 0.7rem;
             text-align: center;
             color: #64748b;
-            margin-top: 24px;
+            margin-top: 20px;
+        }
+        hr {
+            margin: 16px 0;
         }
         @media (max-width: 550px) {
             .container { padding: 18px; }
@@ -156,7 +189,7 @@
 <body>
 <div class="container">
     <h1>🔐 VLESS Generator</h1>
-    <div class="sub">ایجاد لینک کانفیگ + کپی خودکار · ذخیره در مرورگر</div>
+    <div class="sub">ساخت کانفیگ + لیست دامنه‌های پرکاربرد</div>
 
     <div class="field-group">
         <label>UUID</label>
@@ -166,11 +199,11 @@
     <div class="row-2">
         <div class="field-group">
             <label>Address 1 (آدرس سرور)</label>
-            <input type="text" id="addr1" placeholder="kubernetes.io" value="kubernetes.io">
+            <input type="text" id="addr1" class="addr-input" placeholder="kubernetes.io" value="kubernetes.io">
         </div>
         <div class="field-group">
             <label>Address 2 (SNI)</label>
-            <input type="text" id="addr2" placeholder="sni domain" value="kubernetes.io">
+            <input type="text" id="addr2" class="addr-input" placeholder="kubernetes.io" value="kubernetes.io">
         </div>
     </div>
 
@@ -190,6 +223,17 @@
         <input type="text" id="name" placeholder="my-config" value="01-test">
     </div>
 
+    <!-- بخش snilis (لیست دامنه‌ها) -->
+    <div class="snilis-section">
+        <div class="snilis-title">
+            📋 لیست دامنه‌های سریع (snilis)
+            <span style="font-size:0.7rem; font-weight:normal;">کلیک کنید تا در فیلد فعال (با حاشیه قرمز) قرار گیرد</span>
+        </div>
+        <div class="snilis-list" id="snilisContainer">
+            <!-- مقادیر توسط JS درج می‌شوند -->
+        </div>
+    </div>
+
     <button id="generateBtn">✨ تولید لینک & کپی در کلیپ‌بورد</button>
     <button id="copyOnlyBtn" class="copy-btn">📋 فقط کپی لینک فعلی</button>
 
@@ -199,35 +243,113 @@
         <div id="statusMsg" class="status"></div>
     </div>
     <div class="footer-note">
-        ✅ مقادیر به صورت خودکار در مرورگر ذخیره می‌شوند (localStorage) • مسیر (path) به صورت URL-encode شده جایگذاری می‌گردد
+        ✅ با کلیک روی هر دامنه، مقدار آن در فیلد فعال (قرمز) جایگزین می‌شود • ذخیره خودکار در مرورگر
     </div>
 </div>
 
 <script>
-    // --- توابع کمکی -------------------------------------------------
-    function getElements() {
-        return {
-            uuid: document.getElementById('uuid'),
-            addr1: document.getElementById('addr1'),
-            addr2: document.getElementById('addr2'),
-            host: document.getElementById('host'),
-            path: document.getElementById('path'),
-            name: document.getElementById('name'),
-            output: document.getElementById('generatedLink'),
-            status: document.getElementById('statusMsg')
-        };
+    // لیست مقادیر snilis (مطابق دلفی)
+    const snilisValues = [
+        "kubernetes.io",
+        "helm.sh",
+        "letsencrypt.org",
+        "docs.helm.sh",
+        "kubectl.docs.kubernetes.io",
+        "blog.helm.sh",
+        "kind.sigs.k8s.io",
+        "cluster-api.sigs.k8s.io",
+        "krew.sigs.k8s.io",
+        "gateway-api.sigs.k8s.io",
+        "scheduler-plugins.sigs.k8s.io",
+        "kustomize.sigs.k8s.io",
+        "image-builder.sigs.k8s.io"
+    ];
+
+    // --- عناصر DOM ---
+    const uuidInput = document.getElementById('uuid');
+    const addr1Input = document.getElementById('addr1');
+    const addr2Input = document.getElementById('addr2');
+    const hostInput = document.getElementById('host');
+    const pathInput = document.getElementById('path');
+    const nameInput = document.getElementById('name');
+    const outputTextarea = document.getElementById('generatedLink');
+    const statusDiv = document.getElementById('statusMsg');
+    const snilisContainer = document.getElementById('snilisContainer');
+
+    // --- مدیریت فیلد فعال (حاشیه قرمز) ---
+    let activeEdit = null;  // نگهداری فیلدی که در حال حاضر حاشیه قرمز دارد
+
+    // حذف حاشیه قرمز از همه فیلدهای ورودی (addr1 و addr2)
+    function removeActiveBorder() {
+        const addrInputs = document.querySelectorAll('.addr-input');
+        addrInputs.forEach(inp => {
+            inp.classList.remove('active-edit');
+        });
     }
 
-    // ذخیره تمام فیلدها در localStorage
+    // تنظیم حاشیه قرمز روی فیلد انتخاب شده
+    function setActiveEdit(editElement) {
+        removeActiveBorder();
+        if (editElement && (editElement.id === 'addr1' || editElement.id === 'addr2')) {
+            editElement.classList.add('active-edit');
+            activeEdit = editElement;
+        } else {
+            activeEdit = null;
+        }
+    }
+
+    // رویداد کلیک روی فیلدهای addr1 و addr2
+    addr1Input.addEventListener('click', () => setActiveEdit(addr1Input));
+    addr2Input.addEventListener('click', () => setActiveEdit(addr2Input));
+
+    // (اختیاری) در صورت کلیک روی سایر فیلدها، حاشیه قرمز غیرفعال شود
+    const otherInputs = [uuidInput, hostInput, pathInput, nameInput];
+    otherInputs.forEach(inp => {
+        inp.addEventListener('click', () => {
+            removeActiveBorder();
+            activeEdit = null;
+        });
+    });
+
+    // --- پر کردن لیست snilis به صورت دکمه‌های قابل کلیک ---
+    function buildSnilisList() {
+        snilisContainer.innerHTML = '';
+        snilisValues.forEach(domain => {
+            const span = document.createElement('span');
+            span.className = 'snilis-item';
+            span.textContent = domain;
+            span.addEventListener('click', () => {
+                if (activeEdit) {
+                    activeEdit.value = domain;
+                    // ذخیره خودکار بعد از تغییر
+                    saveToLocalStorage();
+                    // پیام کوتاه
+                    statusDiv.innerText = `✅ مقدار "${domain}" در فیلد ${activeEdit.id} قرار گرفت.`;
+                    setTimeout(() => {
+                        if (statusDiv.innerText.includes("قرار گرفت")) statusDiv.innerText = "";
+                    }, 1500);
+                    // همچنین می‌توان لینک را به‌روز کرد (اختیاری)
+                    updateOutputLinkWithoutCopy();
+                } else {
+                    statusDiv.innerText = "⚠️ ابتدا روی فیلد Address 1 یا Address 2 کلیک کنید (حاشیه قرمز شود).";
+                    setTimeout(() => {
+                        if (statusDiv.innerText.includes("ابتدا")) statusDiv.innerText = "";
+                    }, 2000);
+                }
+            });
+            snilisContainer.appendChild(span);
+        });
+    }
+
+    // --- ذخیره در localStorage ---
     function saveToLocalStorage() {
-        const els = getElements();
         const config = {
-            uuid: els.uuid.value,
-            addr1: els.addr1.value,
-            addr2: els.addr2.value,
-            host: els.host.value,
-            path: els.path.value,
-            name: els.name.value
+            uuid: uuidInput.value,
+            addr1: addr1Input.value,
+            addr2: addr2Input.value,
+            host: hostInput.value,
+            path: pathInput.value,
+            name: nameInput.value
         };
         localStorage.setItem('vless_config', JSON.stringify(config));
     }
@@ -238,126 +360,106 @@
         if (!saved) return;
         try {
             const cfg = JSON.parse(saved);
-            const els = getElements();
-            if (cfg.uuid !== undefined) els.uuid.value = cfg.uuid;
-            if (cfg.addr1 !== undefined) els.addr1.value = cfg.addr1;
-            if (cfg.addr2 !== undefined) els.addr2.value = cfg.addr2;
-            if (cfg.host !== undefined) els.host.value = cfg.host;
-            if (cfg.path !== undefined) els.path.value = cfg.path;
-            if (cfg.name !== undefined) els.name.value = cfg.name;
+            if (cfg.uuid !== undefined) uuidInput.value = cfg.uuid;
+            if (cfg.addr1 !== undefined) addr1Input.value = cfg.addr1;
+            if (cfg.addr2 !== undefined) addr2Input.value = cfg.addr2;
+            if (cfg.host !== undefined) hostInput.value = cfg.host;
+            if (cfg.path !== undefined) pathInput.value = cfg.path;
+            if (cfg.name !== undefined) nameInput.value = cfg.name;
         } catch(e) { console.warn(e); }
     }
 
-    // ساخت لینک VLESS بر اساس مقادیر فعلی
+    // --- ساخت لینک VLESS (مشابه دلفی) ---
     function buildVlessLink() {
-        const els = getElements();
-        let uuid = els.uuid.value.trim();
-        let addr1 = els.addr1.value.trim();
-        let addr2 = els.addr2.value.trim();
-        let host = els.host.value.trim();
-        let rawPath = els.path.value.trim();
-        let name = els.name.value.trim();
+        let uuid = uuidInput.value.trim();
+        let addr1 = addr1Input.value.trim();
+        let addr2 = addr2Input.value.trim();
+        let host = hostInput.value.trim();
+        let rawPath = pathInput.value.trim();
+        let name = nameInput.value.trim();
 
-        // اگر فیلدهای ضروری خالی باشند، مقدار پیش‌فرض ساده
         if (!uuid) uuid = "00000000-0000-0000-0000-000000000000";
         if (!addr1) addr1 = "kubernetes.io";
         if (!addr2) addr2 = addr1;
         if (!host) host = addr1;
+        if (!rawPath) rawPath = "/";
+        if (!name) name = "config";
 
-        // رمزگذاری مسیر (مانند TNetEncoding.URL.Encode در دلفی)
-        let encodedPath = encodeURIComponent(rawPath);
-        // در الگوی استاندارد path باید با اسلش شروع شود ولی encodeURIComponent کاراکتر '/' را رمز نمی‌کند.
-        // برای اطمینان '/' باقی می‌ماند و بقیه کاراکترها encode می‌شوند. (مانند دلفی)
-        // اگر کاربر مثلاً "/mypath" وارد کند خروجی "/mypath" خواهد شد (فقط کاراکترهای خاص درصدی می‌شوند)
-        // اما مطمئن می‌شویم که اگر کاربر بدون اسلش وارد کند، مشکلی نباشد.
-        if (encodedPath === "") encodedPath = "%2F";  // مقدار پیش‌فرض ساده
+        const encodedPath = encodeURIComponent(rawPath);
+        const extraEncoded = "%7B%22xPaddingBytes%22%3A%221-1%22%7D"; // {"xPaddingBytes":"1-1"}
 
-        // ساختار نهایی بر اساس فرمت استاندارد vless با fragment name
-        // مشابه استرینگ دلفی: vless://#uuid@#addr1:443?mode=auto&path=#path&security=tls&alpn=h2%2Chttp%2F1.1&encryption=none&extra=%7B%22xPaddingBytes%22%3A%221-1%22%7D&insecure=0&host=#host&fp=chrome&type=xhttp&allowInsecure=0&sni=#addr2#name
-        // دقت شود که extra باید رشته urlencoded باشد و در اینجا ثابت می‌دهیم.
-        const extraEncoded = "%7B%22xPaddingBytes%22%3A%221-1%22%7D";   // {"xPaddingBytes":"1-1"}
-        const baseTemplate = `vless://${uuid}@${addr1}:443?mode=auto&path=${encodedPath}&security=tls&alpn=h2%2Chttp%2F1.1&encryption=none&extra=${extraEncoded}&insecure=0&host=${host}&fp=chrome&type=xhttp&allowInsecure=0&sni=${addr2}#${name}`;
-
-        return baseTemplate;
-    }
-
-    // نمایش لینک در textarea و کپی به کلیپ‌بورد
-    async function generateAndCopy(showMessage = true) {
-        const els = getElements();
-        const link = buildVlessLink();
-        els.output.value = link;
-
-        // کپی به کلیپ بورد
-        try {
-            await navigator.clipboard.writeText(link);
-            if (showMessage) {
-                els.status.innerText = "✅ کانفیگ ساخته شد و در کلیپ‌بورد کپی گردید!";
-                setTimeout(() => {
-                    if (els.status.innerText.includes("کپی گردید")) els.status.innerText = "";
-                }, 2800);
-            } else {
-                els.status.innerText = "✅ لینک در کلیپ‌بورد کپی شد";
-                setTimeout(() => {
-                    if (els.status.innerText.includes("کپی شد")) els.status.innerText = "";
-                }, 2000);
-            }
-        } catch (err) {
-            console.error(err);
-            els.status.innerText = "❌ خطا در کپی خودکار. لطفاً دستی کپی کنید.";
-            // fallback select
-            els.output.select();
-        }
-        // ذخیره تغییرات بعد از تولید (اختیاری)
-        saveToLocalStorage();
+        const link = `vless://${uuid}@${addr1}:443?mode=auto&path=${encodedPath}&security=tls&alpn=h2%2Chttp%2F1.1&encryption=none&extra=${extraEncoded}&insecure=0&host=${host}&fp=chrome&type=xhttp&allowInsecure=0&sni=${addr2}#${name}`;
         return link;
     }
 
-    // فقط کپی لینک موجود در textarea (بدون بازتولید)
+    // به‌روزرسانی textarea بدون کپی (برای پیش‌نمایش)
+    function updateOutputLinkWithoutCopy() {
+        const link = buildVlessLink();
+        outputTextarea.value = link;
+    }
+
+    // تولید و کپی به کلیپ‌بورد
+    async function generateAndCopy(showMessage = true) {
+        const link = buildVlessLink();
+        outputTextarea.value = link;
+        try {
+            await navigator.clipboard.writeText(link);
+            if (showMessage) {
+                statusDiv.innerText = "✅ کانفیگ ساخته شد و در کلیپ‌بورد کپی گردید!";
+                setTimeout(() => {
+                    if (statusDiv.innerText.includes("کپی گردید")) statusDiv.innerText = "";
+                }, 2800);
+            }
+        } catch (err) {
+            statusDiv.innerText = "❌ خطا در کپی خودکار. لطفاً دستی کپی کنید.";
+            outputTextarea.select();
+        }
+        saveToLocalStorage();
+    }
+
+    // فقط کپی لینک موجود در textarea
     async function copyExistingLink() {
-        const els = getElements();
-        const existingLink = els.output.value;
-        if (!existingLink) {
-            els.status.innerText = "⚠️ ابتدا لینکی تولید کنید.";
+        const existing = outputTextarea.value;
+        if (!existing) {
+            statusDiv.innerText = "⚠️ ابتدا لینکی تولید کنید.";
             return;
         }
         try {
-            await navigator.clipboard.writeText(existingLink);
-            els.status.innerText = "📋 لینک موجود کپی شد!";
+            await navigator.clipboard.writeText(existing);
+            statusDiv.innerText = "📋 لینک موجود کپی شد!";
             setTimeout(() => {
-                if (els.status.innerText.includes("کپی شد")) els.status.innerText = "";
+                if (statusDiv.innerText.includes("کپی شد")) statusDiv.innerText = "";
             }, 2000);
         } catch(e) {
-            els.status.innerText = "❌ کپی نشد، دستی کپی کنید.";
-            els.output.select();
+            statusDiv.innerText = "❌ کپی نشد، دستی کپی کنید.";
+            outputTextarea.select();
         }
     }
 
-    // اتصال رویدادها و ذخیره خودکار هنگام تغییر ورودی‌ها
-    function bindEvents() {
-        const els = getElements();
-        const inputs = [els.uuid, els.addr1, els.addr2, els.host, els.path, els.name];
-        for (let inp of inputs) {
+    // --- اتصال رویدادها برای ذخیره خودکار و بروزرسانی لینک ---
+    function bindAutoSaveAndPreview() {
+        const allInputs = [uuidInput, addr1Input, addr2Input, hostInput, pathInput, nameInput];
+        allInputs.forEach(inp => {
             inp.addEventListener('input', () => {
                 saveToLocalStorage();
-                // اختیاری: می‌توانید لینک را live آپدیت کنید اما ترجیحاً با دکمه انجام شود.
+                updateOutputLinkWithoutCopy();
             });
-        }
-
-        const genBtn = document.getElementById('generateBtn');
-        const copyBtn = document.getElementById('copyOnlyBtn');
-        genBtn.addEventListener('click', () => generateAndCopy(true));
-        copyBtn.addEventListener('click', copyExistingLink);
+        });
     }
 
-    // بارگذاری اولیه و نمایش لینک پیش‌فرض (اختیاری)
+    // --- مقداردهی اولیه ---
     function init() {
         loadFromLocalStorage();
-        bindEvents();
-        // به صورت خودکار یک لینک نمونه بساز تا کاربر ببیند (بدون کپی اجباری)
-        const els = getElements();
-        const sampleLink = buildVlessLink();
-        els.output.value = sampleLink;
-        // ولی کپی نمی‌کنیم تا اذیت نشود
+        buildSnilisList();
+        bindAutoSaveAndPreview();
+        updateOutputLinkWithoutCopy();
+
+        // دکمه‌ها
+        document.getElementById('generateBtn').addEventListener('click', () => generateAndCopy(true));
+        document.getElementById('copyOnlyBtn').addEventListener('click', copyExistingLink);
+
+        // در ابتدا هیچ فیلدی active نباشد، ولی اگر خواستید اولین فیلد پیش‌فرض داشته باشد:
+        // setActiveEdit(addr1Input);
     }
 
     init();
