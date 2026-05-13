@@ -2,8 +2,8 @@
 <html lang="fa" dir="ltr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>VLESS Generator - با لیست دامنه</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>VLESS Generator - ریسپانسیو با لیست دامنه</title>
     <style>
         * {
             box-sizing: border-box;
@@ -12,7 +12,7 @@
         body {
             background: #f0f2f5;
             margin: 0;
-            padding: 20px;
+            padding: 12px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -22,24 +22,24 @@
             max-width: 750px;
             width: 100%;
             background: white;
-            border-radius: 24px;
+            border-radius: 28px;
             box-shadow: 0 12px 28px rgba(0,0,0,0.1);
-            padding: 24px 28px;
+            padding: 20px 22px;
         }
         h1 {
-            font-size: 1.7rem;
-            margin: 0 0 8px 0;
+            font-size: 1.6rem;
+            margin: 0 0 6px 0;
             color: #1e2a3e;
         }
         .sub {
             color: #5b6e8c;
             border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 16px;
-            margin-bottom: 24px;
-            font-size: 0.9rem;
+            padding-bottom: 14px;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
         }
         .field-group {
-            margin-bottom: 18px;
+            margin-bottom: 16px;
             display: flex;
             flex-direction: column;
         }
@@ -52,9 +52,9 @@
         input, textarea {
             background: #f8fafc;
             border: 1px solid #cbd5e1;
-            border-radius: 16px;
-            padding: 10px 16px;
-            font-size: 0.9rem;
+            border-radius: 20px;
+            padding: 12px 16px;
+            font-size: 16px; /* جلوگیری از زوم خودکار در iOS */
             transition: 0.2s;
             outline: none;
             font-family: monospace;
@@ -71,24 +71,25 @@
         }
         .row-2 {
             display: flex;
-            gap: 16px;
+            gap: 14px;
             flex-wrap: wrap;
         }
         .row-2 .field-group {
             flex: 1;
+            min-width: 140px;
         }
         button {
             background: #ef4444;
             color: white;
             border: none;
-            border-radius: 40px;
-            padding: 12px 20px;
+            border-radius: 50px;
+            padding: 14px 16px;
             font-weight: bold;
             font-size: 1rem;
             cursor: pointer;
             transition: 0.2s;
             width: 100%;
-            margin-top: 8px;
+            margin-top: 10px;
         }
         button:hover {
             background: #dc2626;
@@ -104,7 +105,7 @@
         .result-area {
             margin-top: 28px;
             background: #f1f5f9;
-            border-radius: 20px;
+            border-radius: 24px;
             padding: 16px;
             border: 1px solid #e2e8f0;
         }
@@ -122,7 +123,7 @@
             font-size: 0.75rem;
             word-break: break-all;
             padding: 12px;
-            border-radius: 16px;
+            border-radius: 18px;
             border: none;
             width: 100%;
             resize: vertical;
@@ -135,36 +136,42 @@
         }
         /* لیست دامنه ها (snilis) */
         .snilis-section {
-            margin: 20px 0 10px;
+            margin: 20px 0 12px;
             background: #f8fafc;
-            border-radius: 20px;
-            padding: 12px 16px;
+            border-radius: 24px;
+            padding: 12px 14px;
             border: 1px solid #e2e8f0;
         }
         .snilis-title {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             font-weight: bold;
             color: #334155;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             display: flex;
             align-items: center;
             gap: 8px;
+            flex-wrap: wrap;
         }
         .snilis-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 12px;
         }
         .snilis-item {
             background: white;
             border: 1px solid #cbd5e1;
-            border-radius: 40px;
-            padding: 6px 16px;
-            font-size: 0.8rem;
+            border-radius: 60px;
+            padding: 8px 18px;
+            font-size: 0.85rem;
             font-family: monospace;
             cursor: pointer;
             transition: 0.2s;
             color: #1e293b;
+            /* افزایش ناحیه قابل لمس */
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
         .snilis-item:hover {
             background: #e2e8f0;
@@ -175,14 +182,62 @@
             font-size: 0.7rem;
             text-align: center;
             color: #64748b;
-            margin-top: 20px;
+            margin-top: 24px;
         }
         hr {
             margin: 16px 0;
         }
-        @media (max-width: 550px) {
-            .container { padding: 18px; }
-            .row-2 { flex-direction: column; gap: 0; }
+        /* ریسپانسیو مخصوص موبایل */
+        @media (max-width: 600px) {
+            body {
+                padding: 8px;
+            }
+            .container {
+                padding: 16px;
+                border-radius: 24px;
+            }
+            h1 {
+                font-size: 1.4rem;
+            }
+            .sub {
+                font-size: 0.75rem;
+            }
+            .row-2 {
+                flex-direction: column;
+                gap: 12px;
+            }
+            .row-2 .field-group {
+                min-width: auto;
+            }
+            input, textarea {
+                padding: 10px 14px;
+                font-size: 16px;
+            }
+            button {
+                padding: 12px 14px;
+                font-size: 0.95rem;
+            }
+            .snilis-item {
+                padding: 6px 14px;
+                font-size: 0.8rem;
+                min-height: 40px;
+            }
+            .snilis-list {
+                gap: 10px;
+            }
+            .result-area {
+                padding: 12px;
+            }
+        }
+        /* برای گوشی‌های خیلی کوچک (زیر 380px) */
+        @media (max-width: 380px) {
+            .snilis-item {
+                padding: 5px 12px;
+                font-size: 0.75rem;
+            }
+            .container {
+                padding: 12px;
+            }
         }
     </style>
 </head>
@@ -193,7 +248,7 @@
 
     <div class="field-group">
         <label>UUID</label>
-        <input type="text" id="uuid" placeholder="00000000-0000-0000-0000-000000000000" value="cddd81ca-387e-4974-8f38-9cf24f31cb6e">
+        <input type="text" id="uuid" placeholder="00000000-0000-0000-0000-000000000000" value="00000000-0000-0000-0000-000000000000">
     </div>
 
     <div class="row-2">
@@ -209,8 +264,8 @@
 
     <div class="row-2">
         <div class="field-group">
-            <label>Host (میزبان)</label>
-            <input type="text" id="host" placeholder="netlify.app / custom" value="zesty-cocada-a5f874.netlify.app">
+            <label>Netlify address</label>
+            <input type="text" id="host" placeholder="netlify.app / custom" value="xxxx-yyyy-zzzzzz.netlify.app">
         </div>
         <div class="field-group">
             <label>Path (مسیر)</label>
@@ -279,7 +334,6 @@
     // --- مدیریت فیلد فعال (حاشیه قرمز) ---
     let activeEdit = null;  // نگهداری فیلدی که در حال حاضر حاشیه قرمز دارد
 
-    // حذف حاشیه قرمز از همه فیلدهای ورودی (addr1 و addr2)
     function removeActiveBorder() {
         const addrInputs = document.querySelectorAll('.addr-input');
         addrInputs.forEach(inp => {
@@ -287,7 +341,6 @@
         });
     }
 
-    // تنظیم حاشیه قرمز روی فیلد انتخاب شده
     function setActiveEdit(editElement) {
         removeActiveBorder();
         if (editElement && (editElement.id === 'addr1' || editElement.id === 'addr2')) {
@@ -298,11 +351,9 @@
         }
     }
 
-    // رویداد کلیک روی فیلدهای addr1 و addr2
     addr1Input.addEventListener('click', () => setActiveEdit(addr1Input));
     addr2Input.addEventListener('click', () => setActiveEdit(addr2Input));
 
-    // (اختیاری) در صورت کلیک روی سایر فیلدها، حاشیه قرمز غیرفعال شود
     const otherInputs = [uuidInput, hostInput, pathInput, nameInput];
     otherInputs.forEach(inp => {
         inp.addEventListener('click', () => {
@@ -311,7 +362,7 @@
         });
     });
 
-    // --- پر کردن لیست snilis به صورت دکمه‌های قابل کلیک ---
+    // --- پر کردن لیست snilis ---
     function buildSnilisList() {
         snilisContainer.innerHTML = '';
         snilisValues.forEach(domain => {
@@ -321,14 +372,11 @@
             span.addEventListener('click', () => {
                 if (activeEdit) {
                     activeEdit.value = domain;
-                    // ذخیره خودکار بعد از تغییر
                     saveToLocalStorage();
-                    // پیام کوتاه
                     statusDiv.innerText = `✅ مقدار "${domain}" در فیلد ${activeEdit.id} قرار گرفت.`;
                     setTimeout(() => {
                         if (statusDiv.innerText.includes("قرار گرفت")) statusDiv.innerText = "";
                     }, 1500);
-                    // همچنین می‌توان لینک را به‌روز کرد (اختیاری)
                     updateOutputLinkWithoutCopy();
                 } else {
                     statusDiv.innerText = "⚠️ ابتدا روی فیلد Address 1 یا Address 2 کلیک کنید (حاشیه قرمز شود).";
@@ -341,7 +389,7 @@
         });
     }
 
-    // --- ذخیره در localStorage ---
+    // --- ذخیره و بارگذاری ---
     function saveToLocalStorage() {
         const config = {
             uuid: uuidInput.value,
@@ -354,7 +402,6 @@
         localStorage.setItem('vless_config', JSON.stringify(config));
     }
 
-    // بارگذاری از localStorage
     function loadFromLocalStorage() {
         const saved = localStorage.getItem('vless_config');
         if (!saved) return;
@@ -369,7 +416,7 @@
         } catch(e) { console.warn(e); }
     }
 
-    // --- ساخت لینک VLESS (مشابه دلفی) ---
+    // --- ساخت لینک VLESS ---
     function buildVlessLink() {
         let uuid = uuidInput.value.trim();
         let addr1 = addr1Input.value.trim();
@@ -386,19 +433,15 @@
         if (!name) name = "config";
 
         const encodedPath = encodeURIComponent(rawPath);
-        const extraEncoded = "%7B%22xPaddingBytes%22%3A%221-1%22%7D"; // {"xPaddingBytes":"1-1"}
-
+        const extraEncoded = "%7B%22xPaddingBytes%22%3A%221-1%22%7D";
         const link = `vless://${uuid}@${addr1}:443?mode=auto&path=${encodedPath}&security=tls&alpn=h2%2Chttp%2F1.1&encryption=none&extra=${extraEncoded}&insecure=0&host=${host}&fp=chrome&type=xhttp&allowInsecure=0&sni=${addr2}#${name}`;
         return link;
     }
 
-    // به‌روزرسانی textarea بدون کپی (برای پیش‌نمایش)
     function updateOutputLinkWithoutCopy() {
-        const link = buildVlessLink();
-        outputTextarea.value = link;
+        outputTextarea.value = buildVlessLink();
     }
 
-    // تولید و کپی به کلیپ‌بورد
     async function generateAndCopy(showMessage = true) {
         const link = buildVlessLink();
         outputTextarea.value = link;
@@ -417,7 +460,6 @@
         saveToLocalStorage();
     }
 
-    // فقط کپی لینک موجود در textarea
     async function copyExistingLink() {
         const existing = outputTextarea.value;
         if (!existing) {
@@ -436,7 +478,6 @@
         }
     }
 
-    // --- اتصال رویدادها برای ذخیره خودکار و بروزرسانی لینک ---
     function bindAutoSaveAndPreview() {
         const allInputs = [uuidInput, addr1Input, addr2Input, hostInput, pathInput, nameInput];
         allInputs.forEach(inp => {
@@ -447,19 +488,13 @@
         });
     }
 
-    // --- مقداردهی اولیه ---
     function init() {
         loadFromLocalStorage();
         buildSnilisList();
         bindAutoSaveAndPreview();
         updateOutputLinkWithoutCopy();
-
-        // دکمه‌ها
         document.getElementById('generateBtn').addEventListener('click', () => generateAndCopy(true));
         document.getElementById('copyOnlyBtn').addEventListener('click', copyExistingLink);
-
-        // در ابتدا هیچ فیلدی active نباشد، ولی اگر خواستید اولین فیلد پیش‌فرض داشته باشد:
-        // setActiveEdit(addr1Input);
     }
 
     init();
