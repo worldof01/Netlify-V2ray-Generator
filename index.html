@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="fa" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>VLESS Config Generator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 650px;
+            width: 100%;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.1);
+            padding: 24px 28px;
+            transition: all 0.2s;
+        }
+        h1 {
+            font-size: 1.7rem;
+            margin: 0 0 8px 0;
+            color: #1e2a3e;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .sub {
+            color: #5b6e8c;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+        }
+        .field-group {
+            margin-bottom: 18px;
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #1e293b;
+            font-size: 0.85rem;
+            letter-spacing: 0.3px;
+        }
+        input, textarea {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 16px;
+            padding: 10px 16px;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            outline: none;
+            font-family: monospace;
+        }
+        input:focus, textarea:focus {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 3px rgba(239,68,68,0.2);
+        }
+        .row-2 {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .row-2 .field-group {
+            flex: 1;
+        }
+        button {
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 40px;
+            padding: 12px 20px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        button:hover {
+            background: #dc2626;
+            transform: scale(0.98);
+        }
+        .copy-btn {
+            background: #3b82f6;
+            margin-top: 12px;
+        }
+        .copy-btn:hover {
+            background: #2563eb;
+        }
+        .result-area {
+            margin-top: 28px;
+            background: #f1f5f9;
+            border-radius: 20px;
+            padding: 16px;
+            border: 1px solid #e2e8f0;
+        }
+        .result-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: bold;
+            color: #475569;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+        #generatedLink {
+            background: #0f172a;
+            color: #a5f3fc;
+            font-family: monospace;
+            font-size: 0.75rem;
+            word-break: break-all;
+            padding: 12px;
+            border-radius: 16px;
+            border: none;
+            resize: vertical;
+        }
+        .status {
+            font-size: 0.75rem;
+            margin-top: 10px;
+            text-align: center;
+            color: #2b6e3c;
+        }
+        hr {
+            margin: 20px 0 10px;
+            border-color: #e2e8f0;
+        }
+        .footer-note {
+            font-size: 0.7rem;
+            text-align: center;
+            color: #64748b;
+            margin-top: 24px;
+        }
+        @media (max-width: 550px) {
+            .container { padding: 18px; }
+            .row-2 { flex-direction: column; gap: 0; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🔐 VLESS Generator</h1>
+    <div class="sub">ایجاد لینک کانفیگ + کپی خودکار · ذخیره در مرورگر</div>
+
+    <div class="field-group">
+        <label>UUID</label>
+        <input type="text" id="uuid" placeholder="00000000-0000-0000-0000-000000000000" value="cddd81ca-387e-4974-8f38-9cf24f31cb6e">
+    </div>
+
+    <div class="row-2">
+        <div class="field-group">
+            <label>Address 1 (آدرس سرور)</label>
+            <input type="text" id="addr1" placeholder="kubernetes.io" value="kubernetes.io">
+        </div>
+        <div class="field-group">
+            <label>Address 2 (SNI)</label>
+            <input type="text" id="addr2" placeholder="sni domain" value="kubernetes.io">
+        </div>
+    </div>
+
+    <div class="row-2">
+        <div class="field-group">
+            <label>Host (میزبان)</label>
+            <input type="text" id="host" placeholder="netlify.app / custom" value="zesty-cocada-a5f874.netlify.app">
+        </div>
+        <div class="field-group">
+            <label>Path (مسیر)</label>
+            <input type="text" id="path" placeholder="/yourpath" value="/yourpath">
+        </div>
+    </div>
+
+    <div class="field-group">
+        <label>Name (برچسب انتهای لینک)</label>
+        <input type="text" id="name" placeholder="my-config" value="01-test">
+    </div>
+
+    <button id="generateBtn">✨ تولید لینک & کپی در کلیپ‌بورد</button>
+    <button id="copyOnlyBtn" class="copy-btn">📋 فقط کپی لینک فعلی</button>
+
+    <div class="result-area">
+        <div class="result-label">➤ VLESS LINK (قابل استفاده در کلاینت)</div>
+        <textarea id="generatedLink" rows="3" readonly placeholder="لینک ساخته شده اینجا نمایش داده می‌شود..."></textarea>
+        <div id="statusMsg" class="status"></div>
+    </div>
+    <div class="footer-note">
+        ✅ مقادیر به صورت خودکار در مرورگر ذخیره می‌شوند (localStorage) • مسیر (path) به صورت URL-encode شده جایگذاری می‌گردد
+    </div>
+</div>
+
+<script>
+    // --- توابع کمکی -------------------------------------------------
+    function getElements() {
+        return {
+            uuid: document.getElementById('uuid'),
+            addr1: document.getElementById('addr1'),
+            addr2: document.getElementById('addr2'),
+            host: document.getElementById('host'),
+            path: document.getElementById('path'),
+            name: document.getElementById('name'),
+            output: document.getElementById('generatedLink'),
+            status: document.getElementById('statusMsg')
+        };
+    }
+
+    // ذخیره تمام فیلدها در localStorage
+    function saveToLocalStorage() {
+        const els = getElements();
+        const config = {
+            uuid: els.uuid.value,
+            addr1: els.addr1.value,
+            addr2: els.addr2.value,
+            host: els.host.value,
+            path: els.path.value,
+            name: els.name.value
+        };
+        localStorage.setItem('vless_config', JSON.stringify(config));
+    }
+
+    // بارگذاری از localStorage
+    function loadFromLocalStorage() {
+        const saved = localStorage.getItem('vless_config');
+        if (!saved) return;
+        try {
+            const cfg = JSON.parse(saved);
+            const els = getElements();
+            if (cfg.uuid !== undefined) els.uuid.value = cfg.uuid;
+            if (cfg.addr1 !== undefined) els.addr1.value = cfg.addr1;
+            if (cfg.addr2 !== undefined) els.addr2.value = cfg.addr2;
+            if (cfg.host !== undefined) els.host.value = cfg.host;
+            if (cfg.path !== undefined) els.path.value = cfg.path;
+            if (cfg.name !== undefined) els.name.value = cfg.name;
+        } catch(e) { console.warn(e); }
+    }
+
+    // ساخت لینک VLESS بر اساس مقادیر فعلی
+    function buildVlessLink() {
+        const els = getElements();
+        let uuid = els.uuid.value.trim();
+        let addr1 = els.addr1.value.trim();
+        let addr2 = els.addr2.value.trim();
+        let host = els.host.value.trim();
+        let rawPath = els.path.value.trim();
+        let name = els.name.value.trim();
+
+        // اگر فیلدهای ضروری خالی باشند، مقدار پیش‌فرض ساده
+        if (!uuid) uuid = "00000000-0000-0000-0000-000000000000";
+        if (!addr1) addr1 = "kubernetes.io";
+        if (!addr2) addr2 = addr1;
+        if (!host) host = addr1;
+
+        // رمزگذاری مسیر (مانند TNetEncoding.URL.Encode در دلفی)
+        let encodedPath = encodeURIComponent(rawPath);
+        // در الگوی استاندارد path باید با اسلش شروع شود ولی encodeURIComponent کاراکتر '/' را رمز نمی‌کند.
+        // برای اطمینان '/' باقی می‌ماند و بقیه کاراکترها encode می‌شوند. (مانند دلفی)
+        // اگر کاربر مثلاً "/mypath" وارد کند خروجی "/mypath" خواهد شد (فقط کاراکترهای خاص درصدی می‌شوند)
+        // اما مطمئن می‌شویم که اگر کاربر بدون اسلش وارد کند، مشکلی نباشد.
+        if (encodedPath === "") encodedPath = "%2F";  // مقدار پیش‌فرض ساده
+
+        // ساختار نهایی بر اساس فرمت استاندارد vless با fragment name
+        // مشابه استرینگ دلفی: vless://#uuid@#addr1:443?mode=auto&path=#path&security=tls&alpn=h2%2Chttp%2F1.1&encryption=none&extra=%7B%22xPaddingBytes%22%3A%221-1%22%7D&insecure=0&host=#host&fp=chrome&type=xhttp&allowInsecure=0&sni=#addr2#name
+        // دقت شود که extra باید رشته urlencoded باشد و در اینجا ثابت می‌دهیم.
+        const extraEncoded = "%7B%22xPaddingBytes%22%3A%221-1%22%7D";   // {"xPaddingBytes":"1-1"}
+        const baseTemplate = `vless://${uuid}@${addr1}:443?mode=auto&path=${encodedPath}&security=tls&alpn=h2%2Chttp%2F1.1&encryption=none&extra=${extraEncoded}&insecure=0&host=${host}&fp=chrome&type=xhttp&allowInsecure=0&sni=${addr2}#${name}`;
+
+        return baseTemplate;
+    }
+
+    // نمایش لینک در textarea و کپی به کلیپ‌بورد
+    async function generateAndCopy(showMessage = true) {
+        const els = getElements();
+        const link = buildVlessLink();
+        els.output.value = link;
+
+        // کپی به کلیپ بورد
+        try {
+            await navigator.clipboard.writeText(link);
+            if (showMessage) {
+                els.status.innerText = "✅ کانفیگ ساخته شد و در کلیپ‌بورد کپی گردید!";
+                setTimeout(() => {
+                    if (els.status.innerText.includes("کپی گردید")) els.status.innerText = "";
+                }, 2800);
+            } else {
+                els.status.innerText = "✅ لینک در کلیپ‌بورد کپی شد";
+                setTimeout(() => {
+                    if (els.status.innerText.includes("کپی شد")) els.status.innerText = "";
+                }, 2000);
+            }
+        } catch (err) {
+            console.error(err);
+            els.status.innerText = "❌ خطا در کپی خودکار. لطفاً دستی کپی کنید.";
+            // fallback select
+            els.output.select();
+        }
+        // ذخیره تغییرات بعد از تولید (اختیاری)
+        saveToLocalStorage();
+        return link;
+    }
+
+    // فقط کپی لینک موجود در textarea (بدون بازتولید)
+    async function copyExistingLink() {
+        const els = getElements();
+        const existingLink = els.output.value;
+        if (!existingLink) {
+            els.status.innerText = "⚠️ ابتدا لینکی تولید کنید.";
+            return;
+        }
+        try {
+            await navigator.clipboard.writeText(existingLink);
+            els.status.innerText = "📋 لینک موجود کپی شد!";
+            setTimeout(() => {
+                if (els.status.innerText.includes("کپی شد")) els.status.innerText = "";
+            }, 2000);
+        } catch(e) {
+            els.status.innerText = "❌ کپی نشد، دستی کپی کنید.";
+            els.output.select();
+        }
+    }
+
+    // اتصال رویدادها و ذخیره خودکار هنگام تغییر ورودی‌ها
+    function bindEvents() {
+        const els = getElements();
+        const inputs = [els.uuid, els.addr1, els.addr2, els.host, els.path, els.name];
+        for (let inp of inputs) {
+            inp.addEventListener('input', () => {
+                saveToLocalStorage();
+                // اختیاری: می‌توانید لینک را live آپدیت کنید اما ترجیحاً با دکمه انجام شود.
+            });
+        }
+
+        const genBtn = document.getElementById('generateBtn');
+        const copyBtn = document.getElementById('copyOnlyBtn');
+        genBtn.addEventListener('click', () => generateAndCopy(true));
+        copyBtn.addEventListener('click', copyExistingLink);
+    }
+
+    // بارگذاری اولیه و نمایش لینک پیش‌فرض (اختیاری)
+    function init() {
+        loadFromLocalStorage();
+        bindEvents();
+        // به صورت خودکار یک لینک نمونه بساز تا کاربر ببیند (بدون کپی اجباری)
+        const els = getElements();
+        const sampleLink = buildVlessLink();
+        els.output.value = sampleLink;
+        // ولی کپی نمی‌کنیم تا اذیت نشود
+    }
+
+    init();
+</script>
+</body>
+</html>
